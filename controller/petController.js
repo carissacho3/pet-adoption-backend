@@ -1,0 +1,114 @@
+const expressAsyncHandler = require('express-async-handler');
+const Pets = require('../database/petdb');
+
+// @desc    Get all Pets
+// @route   Get /api/pet/all
+// @access  Public
+const allPets = expressAsyncHandler(async (req, res) => {
+    try {
+        const pets = await Pets.find(); 
+
+        if (pets) {
+       
+            res.status(200).json(pets);
+        } else {
+            res.status(404).json({ message: 'No pets found' });
+        }
+    } catch (error) {
+     
+        res.status(500).json({ message: 'Error fetching pets', error: error.message });
+    }
+});
+
+// @desc    Get pets by type
+// @route   GET /api/pet/type/:type
+// @access  Public
+const getPetsByType = expressAsyncHandler(async (req, res) => {
+    const petType = req.params.type;
+
+    try {
+        const pets = await Pets.find({ typeofAnimal: petType });
+
+        if (pets.length > 0) {
+            res.status(200).json(pets);
+        } else {
+            res.status(404).json({ message: `No pets of type '${petType}' found` });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching pets by type', error: error.message });
+    }
+});
+
+// @desc    Add Pets
+// @route   POST /api/pet
+// @access  Admin
+const addPet = expressAsyncHandler(async (req, res) => {
+    const { name, type, age } = req.body; 
+
+    if (!name || !type || !age) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    try {
+        const newPet = await Pets.create({
+            name,
+            type,
+            age,
+        });
+
+        res.status(201).json(newPet);
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding pet', error: error.message });
+    }
+});
+
+
+// @desc   update Pets
+// @route   UPDATE /api/pet/:id
+// @access  Admin
+const updatePet = expressAsyncHandler(async (req, res) => {
+    const petId = req.params.id;
+    const { name, type, age } = req.body; 
+
+    try {
+        const pet = await Pets.findById(petId); 
+
+        if (!pet) {
+            return res.status(404).json({ message: 'Pet not found' });
+        }
+
+       
+        pet.name = name || pet.name;
+        pet.type = type || pet.type;
+        pet.age = age || pet.age;
+
+        const updatedPet = await pet.save(); 
+
+        res.status(200).json(updatedPet);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating pet', error: error.message });
+    }
+});
+
+// @desc   delete Pets
+// @route   DELETE /api/pet/:id
+// @access  Admin
+const deletePet = expressAsyncHandler(async (req, res) => {
+    const petId = req.params.id; 
+
+    try {
+        const pet = await Pets.findById(petId); 
+
+        if (!pet) {
+            return res.status(404).json({ message: 'Pet not found' });
+        }
+
+        await pet.remove(); 
+
+        res.status(200).json({ message: 'Pet deleted successfully' }); 
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting pet', error: error.message });
+    }
+});
+
+module.exports = { allPets,getPetsByType, addPet, updatePet, deletePet };
