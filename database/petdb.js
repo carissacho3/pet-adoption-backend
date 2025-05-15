@@ -50,7 +50,9 @@ const petSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     required: true,
-  }
+  },
+ 
+
 });
 
 

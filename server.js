@@ -11,6 +11,7 @@ app.use(express.json());
 
 const userRoutes = require('./route/userRoute');
 app.use('/api/users', userRoutes);
+app.use('/api/bookmarks', userRoutes);
 
 const petRoute = require('./route/petRoute');
 app.use('/api/pets', petRoute);

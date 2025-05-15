@@ -150,11 +150,68 @@ const deleteUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Add pet to user's bookmarks
+// @route   POST /api/users/bookmarks/:petId
+// @access  Private
+const addBookmark = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  const { petId } = req.params;
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  if (user.bookmarks.includes(petId)) {
+    res.status(400);
+    throw new Error('Pet already bookmarked');
+  }
+
+  user.bookmarks.push(petId);
+  await user.save();
+
+  res.status(200).json({ bookmarks: user.bookmarks });
+});
+
+// @desc    Remove pet from bookmarks
+// @route   DELETE /api/users/bookmarks/:petId
+// @access  Private
+const removeBookmark = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  const { petId } = req.params;
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  user.bookmarks = user.bookmarks.filter(id => id.toString() !== petId);
+  await user.save();
+
+  res.status(200).json({ bookmarks: user.bookmarks });
+});
+
+// @desc    Get all bookmarked pets
+// @route   GET /api/users/bookmarks
+// @access  Private
+const getBookmarks = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id).populate('bookmarks');
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  res.status(200).json({ bookmarks: user.bookmarks });
+});
 
 module.exports = {
   registerUser,
   loginUser,
   getUserProfile,
   updateUserProfile,
-  deleteUserProfile
+  deleteUserProfile,
+  addBookmark,
+  removeBookmark,
+  getBookmarks
 };

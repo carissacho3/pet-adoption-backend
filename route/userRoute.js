@@ -8,6 +8,9 @@ const {
   getUserProfile,
   updateUserProfile,
   deleteUserProfile,
+  addBookmark,
+  removeBookmark,
+  getBookmarks
 } = require('../controller/userController');
 
 // Import middleware
@@ -22,5 +25,9 @@ router.post('/login', loginUser);
 router.get('/profile', protect, getUserProfile);
 router.put('/profile', protect, updateUserProfile);
 router.delete('/profile', protect, deleteUserProfile); 
+
+router.post('/bookmarks/:petId', protect, addBookmark);
+router.delete('/bookmarks/:petId', protect, removeBookmark);
+router.get('/bookmarks', protect, getBookmarks);
 
 module.exports = router;

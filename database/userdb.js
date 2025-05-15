@@ -44,7 +44,10 @@ const userSchema = new Schema({
     enum: ['user', 'admin'],  
     default: 'user', 
   },
- 
+    bookmarks: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Pet'
+  }],
 });
 
 const User = mongoose.model('User', userSchema);
