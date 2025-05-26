@@ -39,6 +39,26 @@ const getPetsByType = expressAsyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Get pet by ID
+// @route   GET /api/pet/:id
+// @access  Public
+const getPetById = expressAsyncHandler(async (req, res) => {
+    const petId = req.params.id;
+
+    try {
+        const pet = await Pets.findById(petId);
+
+        if (pet) {
+            res.status(200).json(pet);
+        } else {
+            res.status(404).json({ message: 'Pet not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching pet by ID', error: error.message });
+    }
+});
+
+
 // @desc    Add Pets
 // @route   POST /api/pet
 // @access  Admin
@@ -111,4 +131,4 @@ const deletePet = expressAsyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { allPets,getPetsByType, addPet, updatePet, deletePet };
+module.exports = { allPets,getPetsByType, getPetById, addPet, updatePet, deletePet };
