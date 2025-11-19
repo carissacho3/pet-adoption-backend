@@ -14,7 +14,7 @@ const generateToken = (id, role) => {
 // @route   POST /api/users/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password, firstName, lastName, profilePicture } = req.body;
+  const { username, email, password, firstName, lastName} = req.body;
 
   // Validation
   if (!username || !email || !password || !firstName || !lastName) {
@@ -40,7 +40,6 @@ const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
     firstName,
     lastName,
-    profilePicture, 
     role: req.body.role === 'admin' ? 'admin': 'user',
   });
 
@@ -51,7 +50,6 @@ const registerUser = asyncHandler(async (req, res) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      profilePicture: user.profilePicture,
       role: user.role,
       token: generateToken(user._id, user.role),
     });
@@ -76,7 +74,6 @@ const loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      profilePicture: user.profilePicture,
       role: user.role,
       token: generateToken(user._id, user.role),
     });
@@ -110,7 +107,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.email = req.body.email || user.email;
     user.firstName = req.body.firstName || user.firstName;
     user.lastName = req.body.lastName || user.lastName;
-    user.profilePicture = req.body.profilePicture || user.profilePicture;
 
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
@@ -125,7 +121,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       email: updatedUser.email,
       firstName: updatedUser.firstName,
       lastName: updatedUser.lastName,
-      profilePicture: updatedUser.profilePicture,
       role: updatedUser.role,
       token: generateToken(updatedUser._id),
     });
@@ -142,7 +137,7 @@ const deleteUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
 
   if (user) {
-    await user.remove(); 
+      await user.deleteOne(); 
     res.json({ message: 'User account deleted successfully' });
   } else {
     res.status(404);

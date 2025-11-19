@@ -38,13 +38,15 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 
-const checkAdminRole = asyncHandler(async (req, res, next) => {
-  console.log(req.userRole);
-  if (req.userRole !== 'admin') {
-    res.status(403);
-    throw new Error('Forbidden, admin access required');
-  }
-  next(); 
-});
+const checkAdminRole = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) return res.status(401).json({ message: 'No token provided' });
+
+  const role = authHeader.split(' ')[1]; 
+  if (role !== 'admin') return res.status(403).json({ message: 'Forbidden' });
+
+  next();
+};
 
 module.exports = { protect, checkAdminRole };

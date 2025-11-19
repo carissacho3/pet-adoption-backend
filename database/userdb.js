@@ -34,11 +34,7 @@ const userSchema = new Schema({
     trim: true,
     maxlength: 50, 
   },
-  profilePicture: {
-    type: String, 
-    default: 'https://example.com/default-profile-pic.jpg', 
-  },
- 
+
   role: {
     type: String,
     enum: ['user', 'admin'],  
