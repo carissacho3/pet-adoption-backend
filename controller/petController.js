@@ -88,7 +88,7 @@ const addPet = expressAsyncHandler(async (req, res) => {
 // @access  Admin
 const updatePet = expressAsyncHandler(async (req, res) => {
     const petId = req.params.id;
-    const { name, type, age } = req.body; 
+    const { name, sex, breed, color, weight,age, summary, type, sprayedorNeutered, location, phoneNumber } = req.body; 
 
     try {
         const pet = await Pets.findById(petId); 
@@ -99,8 +99,16 @@ const updatePet = expressAsyncHandler(async (req, res) => {
 
        
         pet.name = name || pet.name;
-        pet.type = type || pet.type;
+        pet.sex = sex || pet.sex;
+        pet.breed = breed || pet.breed;
+        pet.color = color || pet.color;
+        pet.weight = weight || pet.weight;
+        pet.typeofAnimal = type || pet.typeofAnimal;
         pet.age = age || pet.age;
+        pet.summary = summary || pet.summary;
+        pet.sprayedorNeutered = sprayedorNeutered || pet.sprayedorNeutered;
+        pet.location = location || pet.location;
+        pet.phoneNumber = phoneNumber || pet.phoneNumber;
 
         const updatedPet = await pet.save(); 
 
