@@ -63,17 +63,15 @@ const getPetById = expressAsyncHandler(async (req, res) => {
 // @route   POST /api/pet
 // @access  Admin
 const addPet = expressAsyncHandler(async (req, res) => {
-    const { name, type, age } = req.body; 
+    const { name, sex, breed, color, weight, age, type, summary, typeofAnimal, spayedOrNeutered, image, location, phoneNumber} = req.body; 
 
-    if (!name || !type || !age) {
+    if ( !name || !sex || !breed || !color || !weight || !age || !type || !summary || !typeofAnimal || !spayedOrNeutered || !image || !location || !phoneNumber ) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
     try {
         const newPet = await Pets.create({
-            name,
-            type,
-            age,
+           name, sex, breed, color, weight, age, type, summary, typeofAnimal, spayedOrNeutered, image, location, phoneNumber
         });
 
         res.status(201).json(newPet);
@@ -97,7 +95,7 @@ const updatePet = expressAsyncHandler(async (req, res) => {
             return res.status(404).json({ message: 'Pet not found' });
         }
 
-       
+
         pet.name = name || pet.name;
         pet.sex = sex || pet.sex;
         pet.breed = breed || pet.breed;
